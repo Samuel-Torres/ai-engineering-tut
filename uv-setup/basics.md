@@ -25,4 +25,15 @@ uv init:
 
 upon running it'll run the .venv for you automatically and install needed dependencies. 
 
+uv.lock similar to json.lock but you do push it to github
+uv remove package.name: removes dependency
+
+•• If Using Tensorflow or other dependency that cannot be installed because the version of python you're using is too modern you will get the following error: Mo solution found when resolving dependencies:
+
+just downgrade the version of python you're using to the required one according to tensorflow.
+
+running `uv lock` will generate a new lock file
+
+Learn --lib --app for uv init... we will be using --app a lot when creating applications.
+
  -->
