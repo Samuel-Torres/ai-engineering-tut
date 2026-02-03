@@ -1,7 +1,14 @@
 """
 generators are a type of iterable, like lists or tuples. Unlike lists, they do not store their contents in memory; instead, they generate the items on-the-fly and only when requested. This makes them more memory efficient for large datasets.
 
-Decorators are a way to modify or enhance functions or methods without changing their actual code. They are often used for logging, access control, instrumentation, and caching.
+keywords: yield, next(), send(), yield from, close()
+
+yield: used in a function to make it a generator. It produces a value and pauses the function's state, allowing it to be resumed later.
+next(): retrieves the next value from a generator. It resumes the generator's execution until the next yield statement is encountered.
+send(): used to send a value into a generator. It resumes the generator's execution and can
+yield from: allows a generator to delegate part of its operations to another generator. It simplifies the code when combining multiple generators.
+close(): used to terminate a generator. It raises a GeneratorExit exception inside the generator to perform any necessary cleanup.
+
 """
 
 # basics of generators:
@@ -59,7 +66,10 @@ def infinite_chai():
 refill = infinite_chai()
 
 for _ in range(5):
-    print(next(refill))
+    # the _ is a convention to indicate that the loop variable is intentionally being ignored.
+    print(
+        next(refill)
+    )  # next() function is used to retrieve the next value from the generator each time it is called.
 
 
 # Sending values to a generator:
@@ -79,3 +89,42 @@ stall = chai_customer()
 next(stall)  # Start the generator
 print(stall.send("Masala Chai"))
 print(stall.send("Ginger Chai"))
+
+# Yield From example:
+
+
+def local_chai():
+    yield "Cup 1: Masala Chai"
+    yield "Cup 2: Ginger Chai"
+    yield "Cup 3: Cardamom Chai"
+
+
+def imported_chai():
+    yield "Cup A: Tulsi Chai"
+    yield "Cup B: Lemon Chai"
+
+
+def full_menu():
+    yield from local_chai()  # delegates to local_chai generator
+    yield from imported_chai()  # delegates to imported_chai generator
+
+
+for chai in full_menu():
+    print("FROM FULL: ", chai)
+
+
+# Close a generator:
+def chai_stall():
+    try:
+        while True:
+            order = yield
+            print(f"Preparing your {order}...")
+    except:
+        print("Stall is closing. No more orders can be taken.")
+
+
+stall = chai_stall()
+print(next(stall))  # Start the generator
+print(stall.send("Masala Chai"))
+
+stall.close()  # Close the generator: you should always close generators when done using them. Because it releases any resources the generator might be holding onto and ensures that any necessary cleanup code within the generator is executed.
